@@ -11,9 +11,12 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DuoIcon from '@mui/icons-material/Duo';
+
 import './Card.css'
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -69,11 +72,11 @@ export default function RecipeReviewCard() {
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
+          <VideoCallIcon />
         </IconButton>
-        <IconButton aria-label="share">
+        {/* <IconButton aria-label="share">
           <ShareIcon />
-        </IconButton>
+        </IconButton> */}
         <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
