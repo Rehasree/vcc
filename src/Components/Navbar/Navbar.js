@@ -85,7 +85,7 @@ function ResponsiveAppBar() {
   
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{background:"crimson"}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -176,14 +176,14 @@ function ResponsiveAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             {!userName?
-            (<Button variant="contained" onClick={handleLogin}>Login</Button>
+            (<Button style={{background:"white", color:"crimson", borderRadius:"15px"}} variant="contained" onClick={handleLogin}>Login</Button>
             )
             :
             (
               <>
               <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={userName} src="/static/images/avatar/2.jpg" />
+                <Avatar alt={userName.toUpperCase()} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

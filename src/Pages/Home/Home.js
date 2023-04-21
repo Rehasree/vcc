@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div>
         <ResponsiveAppBar/>
-        <VApp/>
+        {/* <VApp/> */}
         <NestedGrid/>
 
 
