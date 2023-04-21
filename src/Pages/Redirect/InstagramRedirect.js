@@ -12,7 +12,7 @@ const InstagramRedirect = () => {
     
         if (code) {
           const exchangeCodeForToken = async () => {
-            const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/instagram-redirect/';
+            const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/';
             const appId = '1422036221904968';
             const appSecret = '438aa50628f6488b5cd05fce3992b6b1';
     

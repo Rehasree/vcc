@@ -15,13 +15,14 @@ import AdbIcon from '@mui/icons-material/Adb';
 import axios from 'axios'
 import { useEffect } from 'react';
 import './Navbar.css'
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [account,setAcccount]= React.useState(null)
+  const [userName,setuserName]= React.useState(null)
+  const pages = ['Products', 'Pricing', 'Blog'];
+  const settings = [`Hi ${userName}`, 'Account', 'Dashboard', 'Logout'];
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -37,9 +38,8 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
   
-    const [accessToken, setAccessToken] = React.useState(null);
     const handleLogin = () => {
-       const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/instagram-redirect/';
+       const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/';
       const appId = '1422036221904968';
       const responseType = 'code';
       const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user_profile,user_media&response_type=${responseType}`;
@@ -47,36 +47,40 @@ function ResponsiveAppBar() {
       // Redirect the user to the Instagram authentication page
       window.location.href = authUrl;
     };
-  
+    
+    const [accessToken, setAccessToken] = React.useState(null);
+
     useEffect(() => {
-      console.log('URL:', window.location.href);
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
-      console.log('code', code);
+        console.log('URL:', window.location.href);
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        console.log('code', code);
+    
+        if (code) {
+          const exchangeCodeForToken = async () => {
+            const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/';
+            const appId = '1422036221904968';
+            const appSecret = '438aa50628f6488b5cd05fce3992b6b1';
+    
+            try {
+              const response = await axios.post('https://activeplushvolcano.rehasreekoneru.repl.co/api/exchange-code', {
+                code,
+                appId,
+                appSecret,
+                redirectUri,
+              });
+              console.log('response',response);
+              setAccessToken(response.data.access_token);
+              setuserName(response.data.username)
+            } catch (error) {
+              console.error('Error exchanging code for token:', error);
+            }
+          };
+    
+          exchangeCodeForToken();
+        }
+      }, []);
   
-      if (code) {
-        const exchangeCodeForToken = async () => {
-          const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/instagram-redirect/';
-          const appId = '1422036221904968';
-          const appSecret = '438aa50628f6488b5cd05fce3992b6b1';
-  
-          try {
-            const response = await axios.post('https://activeplushvolcano.rehasreekoneru.repl.co/api/exchange-code', {
-              code,
-              appId,
-              appSecret,
-              redirectUri,
-            });
-            console.log('response');
-            setAccessToken(response.data.access_token);
-          } catch (error) {
-            console.error('Error exchanging code for token:', error);
-          }
-        };
-  
-        exchangeCodeForToken();
-      }
-    }, []);
   
   
 
@@ -171,7 +175,7 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {!account?
+            {!userName?
             (<Button variant="contained" onClick={handleLogin}>Login</Button>
             )
             :
@@ -179,7 +183,7 @@ function ResponsiveAppBar() {
               <>
               <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={userName} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
