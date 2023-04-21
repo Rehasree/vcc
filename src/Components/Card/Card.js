@@ -51,12 +51,16 @@ export default function RecipeReviewCard() {
         }
         action={
           <IconButton aria-label="settings">
-            <MoreVertIcon />
+            <MoreVertIcon  style={{color:"white", fontSize:"2rem"}}  />
           </IconButton>
         }
        
         title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        subheader={
+          <Typography variant="subtitle2" component="div" style={{ color: 'grey' }}>
+            September 14, 2016
+          </Typography>
+        }
       />
       <CardMedia
         component="img"
@@ -65,7 +69,7 @@ export default function RecipeReviewCard() {
         alt="Paella dish"
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" style={{color:"white"}}>
           This impressive paella is a perfect party dish and a fun meal to cook
           together with your guests. Add 1 cup of frozen peas along with the mussels,
           if you like.
@@ -73,7 +77,7 @@ export default function RecipeReviewCard() {
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites"  onClick={() => setJoined(true)}>
-          <VideoCallIcon />
+          <VideoCallIcon style={{color:"white", fontSize:"2rem"}} />
         </IconButton>
        
         {/* <IconButton aria-label="share">
@@ -85,7 +89,7 @@ export default function RecipeReviewCard() {
           aria-expanded={expanded}
           aria-label="show more"
         >
-          <ExpandMoreIcon />
+          <ExpandMoreIcon style={{color:"white", fontSize:"2rem"}} />
         </ExpandMore>
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
