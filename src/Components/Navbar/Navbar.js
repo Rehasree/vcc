@@ -39,7 +39,7 @@ function ResponsiveAppBar() {
   
     const [accessToken, setAccessToken] = React.useState(null);
     const handleLogin = () => {
-       const redirectUri = 'http://localhost:3000/instagram-redirect';
+       const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/instagram-redirect/';
       const appId = '1422036221904968';
       const responseType = 'code';
       const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user_profile,user_media&response_type=${responseType}`;
@@ -56,7 +56,7 @@ function ResponsiveAppBar() {
   
       if (code) {
         const exchangeCodeForToken = async () => {
-          const redirectUri = 'http://localhost:3000';
+          const redirectUri = 'https://main--chipper-pie-1ad82e.netlify.app/instagram-redirect/';
           const appId = '1422036221904968';
           const appSecret = '438aa50628f6488b5cd05fce3992b6b1';
   
