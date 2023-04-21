@@ -23,7 +23,7 @@ const InstagramRedirect = () => {
                 appSecret,
                 redirectUri,
               });
-              console.log('response');
+              console.log('response',response);
               setAccessToken(response.data.access_token);
             } catch (error) {
               console.error('Error exchanging code for token:', error);
