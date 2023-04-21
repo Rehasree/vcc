@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AgoraRTC, { createClient } from 'agora-rtc-sdk-ng';
 import { VideoPlayer } from './VideoPlayer';
 import axios from 'axios';
-
+import { Button } from '@mui/material';
 
 
 
@@ -27,7 +27,19 @@ export const VideoRoom = () => {
   AgoraRTC.setLogLevel(4);
   
   let agoraCommandQueue = Promise.resolve();
-  
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
+
+  const handleToggleAudio = () => {
+    setIsAudioMuted(!isAudioMuted);
+    users.find(user => user.uid === uid)?.audioTrack?.setEnabled(!isAudioMuted);
+  };
+
+  const handleToggleVideo = () => {
+    setIsVideoMuted(!isVideoMuted);
+    users.find(user => user.uid === uid)?.videoTrack?.setEnabled(!isVideoMuted);
+  };
+
   const createAgoraClient = ({
     onVideoTrack,
     onUserDisconnected,
@@ -160,24 +172,42 @@ export const VideoRoom = () => {
   
   return (
     <>
-      <div style={{color:"white"}}>{uid}</div>
+    <div style={{ color: 'white' }}>{uid}</div>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 200px)',
         }}
       >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 200px)',
-          }}
-        >
-          {users.map((user) => (
-            <VideoPlayer key={user.uid} user={user} />
-          ))}
-        </div>
+        {users.map((user) => (
+          <VideoPlayer key={user.uid} user={user} />
+        ))}
       </div>
-    </>
+    </div>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: 20,
+      }}
+    >
+      <Button variant="contained" onClick={handleToggleAudio}>
+        {isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleToggleVideo}
+        style={{ marginLeft: 10 }}
+      >
+        {isVideoMuted ? 'Turn On Video' : 'Turn Off Video'}
+      </Button>
+    </div>
+  </>
   );
 };
