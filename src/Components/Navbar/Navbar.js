@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import axios from 'axios'
+import { useEffect } from 'react';
 import './Navbar.css'
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -19,7 +21,7 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const [account,setAcccount]= React.useState(null)
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -34,6 +36,49 @@ function ResponsiveAppBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  
+    const [accessToken, setAccessToken] = React.useState(null);
+    const handleLogin = () => {
+       const redirectUri = 'http://localhost:3000/instagram-redirect';
+      const appId = '1422036221904968';
+      const responseType = 'code';
+      const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user_profile,user_media&response_type=${responseType}`;
+  
+      // Redirect the user to the Instagram authentication page
+      window.location.href = authUrl;
+    };
+  
+    useEffect(() => {
+      console.log('URL:', window.location.href);
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      console.log('code', code);
+  
+      if (code) {
+        const exchangeCodeForToken = async () => {
+          const redirectUri = 'http://localhost:3000';
+          const appId = '1422036221904968';
+          const appSecret = '438aa50628f6488b5cd05fce3992b6b1';
+  
+          try {
+            const response = await axios.post('https://activeplushvolcano.rehasreekoneru.repl.co/api/exchange-code', {
+              code,
+              appId,
+              appSecret,
+              redirectUri,
+            });
+            console.log('response');
+            setAccessToken(response.data.access_token);
+          } catch (error) {
+            console.error('Error exchanging code for token:', error);
+          }
+        };
+  
+        exchangeCodeForToken();
+      }
+    }, []);
+  
+  
 
   return (
     <AppBar position="static">
@@ -126,7 +171,13 @@ function ResponsiveAppBar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            {!account?
+            (<Button variant="contained" onClick={handleLogin}>Login</Button>
+            )
+            :
+            (
+              <>
+              <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
@@ -153,6 +204,11 @@ function ResponsiveAppBar() {
                 </MenuItem>
               ))}
             </Menu>
+              </>
+            )
+            }
+            
+            
           </Box>
         </Toolbar>
       </Container>
