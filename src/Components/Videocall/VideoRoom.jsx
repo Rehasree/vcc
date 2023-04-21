@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import AgoraRTC, { createClient } from 'agora-rtc-sdk-ng';
 import { VideoPlayer } from './VideoPlayer';
+import axios from 'axios';
+
+const fetchToken =async()=>{
+  const response = await axios.get('https://activeplushvolcano.rehasreekoneru.repl.co/generate-token')
+  console.log('fetch tokenresponse', response)
+  return response.data.token;
+}
 
 const APP_ID = '3b3906112c884a43a1730974819db525';
-const TOKEN =
-  '0063b3906112c884a43a1730974819db525IABPn6w5+pNxhD3yefuePigwtPNFNYZPCcES+XaVBwSOMGLMzZAh39v0IgBlc8+Ic0NEZAQAAQADAENkAgADAENkAwADAENkBAADAENk';
+
 const CHANNEL = 'test-channel';
 
 AgoraRTC.setLogLevel(4);
@@ -35,7 +41,8 @@ const createAgoraClient = ({
 
   const connect = async () => {
     await waitForConnectionState('DISCONNECTED');
-
+    const TOKEN = await fetchToken()
+    console.log('token', TOKEN)
     const uid = await client.join(
       APP_ID,
       CHANNEL,
@@ -110,6 +117,7 @@ export const VideoRoom = () => {
       );
     };
 
+    
     const { connect, disconnect } = createAgoraClient({
       onVideoTrack,
       onUserDisconnected,
@@ -142,7 +150,7 @@ export const VideoRoom = () => {
       agoraCommandQueue = agoraCommandQueue.then(cleanup);
     };
   }, []);
-
+  
   return (
     <>
       <div style={{color:"white"}}>{uid}</div>
