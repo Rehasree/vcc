@@ -30,7 +30,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function RecipeReviewCard() {
+export default function RecipeReviewCard(accessToken={accessToken}) {
   const [expanded, setExpanded] = React.useState(false);
   const [joined, setJoined] = useState(false);
   const handleExpandClick = () => {
@@ -49,7 +49,7 @@ export default function RecipeReviewCard() {
       videoRoomRef.current.onVideoTrack({ uid: 'p1' });
     }
   }, [joined]);
-
+  console.log('accesaccessToken',accessToken.accessToken.accessToken.accessToken)
 
   return (
     <Card
@@ -93,8 +93,12 @@ export default function RecipeReviewCard() {
         <IconButton
           aria-label="add to favorites"
           onClick={() => {
+            if(accessToken.accessToken.accessToken.accessToken){
             setJoined(true);
             toggleFullScreen();
+            }else{
+              alert('Please login to join video call')
+            }
           }}
         >
           <VideoCallIcon style={{ color: 'white', fontSize: '2rem' }} />
@@ -120,6 +124,7 @@ export default function RecipeReviewCard() {
               isFullScreen={isFullScreen}
               setIsFullScreen={setIsFullScreen}
               setJoined={setJoined}
+              accessToken={accessToken.accessToken.accessToken.accessToken}
             />
           )}
         </CardContent>

@@ -7,7 +7,7 @@ import './videoroom.css'
 import { useImperativeHandle } from 'react';
 
 
-const VideoRoom = ({ isFullScreen, setIsFullScreen ,setJoined}, ref) => {
+const VideoRoom = ({ isFullScreen, setIsFullScreen ,setJoined,accessToken}, ref) => {
   const [users, setUsers] = useState([]);
   const [uid, setUid] = useState(null);
   const [token,setToken]=useState(null)
@@ -67,7 +67,7 @@ const VideoRoom = ({ isFullScreen, setIsFullScreen ,setJoined}, ref) => {
       await waitForConnectionState('DISCONNECTED');
       console.log('token', token);
     
-      const uid = await client.join(APP_ID, CHANNEL, token, null);
+      const uid = await client.join(APP_ID, CHANNEL, accessToken, null);
     
       client.on('user-published', (user, mediaType) => {
         client.subscribe(user, mediaType).then(() => {
@@ -148,6 +148,8 @@ const VideoRoom = ({ isFullScreen, setIsFullScreen ,setJoined}, ref) => {
       onVideoTrack,
       onUserDisconnected,
     });
+    
+    
 
     const setup = async () => {
       const { tracks, uid } = await connect();
@@ -229,6 +231,8 @@ const onVideoTrack = (user) => {
 useImperativeHandle(ref, () => ({
   onVideoTrack,
 }));
+
+
 
 // useEffect(()=>{
 //   onVideoTrack()

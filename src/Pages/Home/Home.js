@@ -4,11 +4,13 @@ import NestedGrid from '../../Components/Grid/Grid'
 // import VideoCall from '../../Components/Videocall/Videocall'
 import VApp from '../../Components/Videocall/Videocall'
 const Home = () => {
+  const [accessToken, setAccessToken] = React.useState(null);
+
   return (
     <div>
-        <ResponsiveAppBar/>
+        <ResponsiveAppBar setAccessToken={setAccessToken}/>
         {/* <VApp/> */}
-        <NestedGrid/>
+        <NestedGrid accessToken={accessToken}/>
 
 
     </div>

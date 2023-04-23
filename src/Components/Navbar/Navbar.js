@@ -16,13 +16,13 @@ import axios from 'axios'
 import { useEffect } from 'react';
 import './Navbar.css'
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(setAccessToken) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [userName,setuserName]= React.useState(null)
   const pages = ['Products', 'Pricing', 'Blog'];
   const settings = [`Hi ${userName}`, 'Account', 'Dashboard', 'Logout'];
-
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -48,7 +48,7 @@ function ResponsiveAppBar() {
       window.location.href = authUrl;
     };
     
-    const [accessToken, setAccessToken] = React.useState(null);
+   // const [accessToken, setAccessToken] = React.useState(null);
 
     useEffect(() => {
         console.log('URL:', window.location.href);

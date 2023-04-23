@@ -13,35 +13,35 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function FormRow() {
+function FormRow(accessToken) {
   return (
     <React.Fragment>
       <Grid item xs={12}  style={{display:"flex", justifyContent:"center"}} >
-        <RecipeReviewCard/>
+        <RecipeReviewCard accessToken={accessToken}/>
       </Grid>
       <Grid item xs={12}  style={{display:"flex", justifyContent:"center"}}>
-        <RecipeReviewCard/>
+        <RecipeReviewCard accessToken={accessToken}/>
       </Grid>
       <Grid item xs={12}  style={{display:"flex", justifyContent:"center"}}>
-        <RecipeReviewCard/>
+        <RecipeReviewCard accessToken={accessToken}/>
         {/* <Item>Item-1</Item> */}
       </Grid>
     </React.Fragment>
   );
 }
 
-export default function NestedGrid() {
+export default function NestedGrid(accessToken) {
   return (
     <Box sx={{ flexGrow: 1 }} style={{margin:"40px"}}>
       <Grid container spacing={1} >
         <Grid container item spacing={3} >
-          <FormRow />
+          <FormRow accessToken={accessToken} />
         </Grid>
         <Grid container item spacing={3}>
-          <FormRow />
+          <FormRow accessToken={accessToken} />
         </Grid>
         <Grid container item spacing={3}>
-          <FormRow />
+          <FormRow  accessToken={accessToken}/>
         </Grid>
       </Grid>
     </Box>
