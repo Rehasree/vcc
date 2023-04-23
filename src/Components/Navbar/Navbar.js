@@ -16,7 +16,7 @@ import axios from 'axios'
 import { useEffect } from 'react';
 import './Navbar.css'
 
-function ResponsiveAppBar(setAccessToken) {
+function ResponsiveAppBar({setAccessToken}) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [userName,setuserName]= React.useState(null)
