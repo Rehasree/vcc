@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export const VideoPlayer = ({ user }) => {
+export const VideoPlayer = ({ user, isLocal }) => {
   const videoRef = useRef(null);
   const audioRef = useRef(null);
 
@@ -24,14 +24,33 @@ export const VideoPlayer = ({ user }) => {
     };
   }, [user]);
 
+  const videoPlayerStyle = isLocal
+    ? {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        width: '30%',
+        zIndex: 1,
+      }
+    : {
+        width: '100%',
+        height: '100%',
+      };
+
   return (
-    <div>
-      Uid: {user.uid}
-      <div
+    <div style={videoPlayerStyle}>
+      <video
         ref={videoRef}
-        style={{ width: '400px', height: '500px' }}
-      ></div>
-      <audio ref={audioRef} autoPlay />
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
+        autoPlay
+        playsInline
+        muted={isLocal}
+      />
+      {isLocal || <audio ref={audioRef} autoPlay />}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Videocall.css';
-import { VideoRoom } from './VideoRoom';
+import  VideoRoom  from './VideoRoom';
 
 function VApp() {
   const [joined, setJoined] = useState(false);

@@ -3,10 +3,11 @@ import AgoraRTC, { createClient } from 'agora-rtc-sdk-ng';
 import { VideoPlayer } from './VideoPlayer';
 import axios from 'axios';
 import { Button } from '@mui/material';
+import './videoroom.css'
+import { useImperativeHandle } from 'react';
 
 
-
-export const VideoRoom = () => {
+const VideoRoom = ({ isFullScreen, setIsFullScreen ,setJoined}, ref) => {
   const [users, setUsers] = useState([]);
   const [uid, setUid] = useState(null);
   const [token,setToken]=useState(null)
@@ -32,12 +33,12 @@ export const VideoRoom = () => {
 
   const handleToggleAudio = () => {
     setIsAudioMuted(!isAudioMuted);
-    users.find(user => user.uid === uid)?.audioTrack?.setEnabled(!isAudioMuted);
+    users.find(user => user?.uid === uid)?.audioTrack?.setEnabled(!isAudioMuted);
   };
 
   const handleToggleVideo = () => {
     setIsVideoMuted(!isVideoMuted);
-    users.find(user => user.uid === uid)?.videoTrack?.setEnabled(!isVideoMuted);
+    users.find(user => user?.uid === uid)?.videoTrack?.setEnabled(!isVideoMuted);
   };
 
   const createAgoraClient = ({
@@ -64,16 +65,10 @@ export const VideoRoom = () => {
   
     const connect = async () => {
       await waitForConnectionState('DISCONNECTED');
-      console.log('token',token)
-      // if(TOKEN){
-        const uid = await client.join(
-          APP_ID,
-          CHANNEL,
-          token,
-          null
-        );
-      // }
-  
+      console.log('token', token);
+    
+      const uid = await client.join(APP_ID, CHANNEL, token, null);
+    
       client.on('user-published', (user, mediaType) => {
         client.subscribe(user, mediaType).then(() => {
           if (mediaType === 'video') {
@@ -81,20 +76,32 @@ export const VideoRoom = () => {
           }
         });
       });
-  
+    
       client.on('user-left', (user) => {
         onUserDisconnected(user);
       });
-      
-      tracks =
-        await AgoraRTC.createMicrophoneAndCameraTracks();
-      await client.publish(tracks);
-  
+    
+      // Configure audio track with echo cancellation
+      const audioTrackConfig = {
+        encoderConfig: 'high_quality_stereo',
+        noiseSuppression: true,
+        autoGainControl: true,
+        echoCancellation: true,
+      };
+    
+      // Create audio and video tracks with custom configurations
+      const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks(
+        audioTrackConfig
+      );
+    
+      await client.publish([audioTrack, videoTrack]);
+    
       return {
-        tracks,
+        tracks: [audioTrack, videoTrack],
         uid,
       };
     };
+    
   
   
     const listDevices = async () => {
@@ -132,7 +139,7 @@ export const VideoRoom = () => {
 
     const onUserDisconnected = (user) => {
       setUsers((previousUsers) =>
-        previousUsers.filter((u) => u.uid !== user.uid)
+        previousUsers.filter((u) => u?.uid !== user?.uid)
       );
     };
 
@@ -154,13 +161,14 @@ export const VideoRoom = () => {
         },
       ]);
     };
-
+   
+    
     const cleanup = async () => {
       await disconnect();
       setUid(null);
       setUsers([]);
     };
-
+    
     // setup();
     agoraCommandQueue = agoraCommandQueue.then(setup);
 
@@ -169,45 +177,109 @@ export const VideoRoom = () => {
       agoraCommandQueue = agoraCommandQueue.then(cleanup);
     };
   }, []);
+
+  const handleEndCall = () => {
+    agoraCommandQueue = agoraCommandQueue.then(() => {
+      const { cleanup, disconnect } = createAgoraClient({});
+      disconnect()
+      cleanup();
+    });
+    setJoined(false)
+  };
+  const containerStyle = isFullScreen
+  ? {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      zIndex: 1000,
+      backgroundColor: '#000',
+       overflowY:"scroll"
+    }
+  : {};
+
+const handleExitFullScreen = () => {
+  if (isFullScreen) {
+    setIsFullScreen(false);
+  }
+};
+
+const onVideoTrack = (user) => {
+  setUsers((previousUsers) => {
+    // Check if the user is already in the list
+    const userExists = previousUsers?.find((u) => u?.uid === user?.uid);
+    if (!userExists) {
+      return [...previousUsers, user];
+    } else {
+      // Update the existing user's video track
+      const updatedUsers = previousUsers.map((u) => {
+        if (u?.uid === user?.uid) {
+          return { ...u, videoTrack: user?.videoTrack };
+        } else {
+          return u;
+        }
+      });
+      return updatedUsers;
+    }
+  });
+};
+
+
+useImperativeHandle(ref, () => ({
+  onVideoTrack,
+}));
+
+// useEffect(()=>{
+//   onVideoTrack()
+// },[users])
+
   
   return (
     <>
-    <div style={{ color: 'white' }}>{uid}</div>
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-      }}
-    >
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 200px)',
-        }}
-      >
+     <div style={containerStyle}>
+      {isFullScreen && (
+        <Button onClick={handleExitFullScreen} style={{ position: 'absolute', zIndex: 1001 }}>
+          Exit Full Screen
+        </Button>
+      )}
+      {/* ... other content ... */}
+      <div style={{ color: 'white' }}>{uid&&uid}</div>
+      <div className="video-container">
         {users.map((user) => (
-          <VideoPlayer key={user.uid} user={user} />
+          <VideoPlayer
+            key={user?.uid}
+            user={user}
+            isLocal={user?.uid === uid}
+            className="video-track"
+          />
         ))}
       </div>
-    </div>
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        marginTop: 20,
-      }}
-    >
-      <Button variant="contained" onClick={handleToggleAudio}>
-        {isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
-      </Button>
-      <Button
-        variant="contained"
-        onClick={handleToggleVideo}
-        style={{ marginLeft: 10 }}
+
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginTop: 20,
+        }}
       >
-        {isVideoMuted ? 'Turn On Video' : 'Turn Off Video'}
-      </Button>
+        <Button variant="contained" onClick={handleToggleAudio}>
+          {isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleToggleVideo}
+          style={{ marginLeft: 10 }}
+        >
+          {isVideoMuted ? 'Turn On Video' : 'Turn Off Video'}
+        </Button>
+        <Button variant="contained" onClick={handleEndCall} style={{ marginLeft: 10 }}>
+          End Call
+        </Button>
+      </div>
     </div>
-  </>
+      
+    </>
   );
 };
+export default React.forwardRef(VideoRoom);

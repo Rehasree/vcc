@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState,useRef,useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -17,7 +17,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DuoIcon from '@mui/icons-material/Duo';
-import { VideoRoom } from '../Videocall/VideoRoom';
+import  VideoRoom  from '../Videocall/VideoRoom';
 import './Card.css'
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -36,6 +36,20 @@ export default function RecipeReviewCard() {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+
+  const videoRoomRef = useRef();
+
+  useEffect(() => {
+    if (videoRoomRef.current && joined) {
+      videoRoomRef.current.onVideoTrack({ uid: 'p1' });
+    }
+  }, [joined]);
+
 
   return (
     <Card
@@ -76,8 +90,14 @@ export default function RecipeReviewCard() {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites"  onClick={() => setJoined(true)}>
-          <VideoCallIcon style={{color:"white", fontSize:"2rem"}} />
+        <IconButton
+          aria-label="add to favorites"
+          onClick={() => {
+            setJoined(true);
+            toggleFullScreen();
+          }}
+        >
+          <VideoCallIcon style={{ color: 'white', fontSize: '2rem' }} />
         </IconButton>
        
         {/* <IconButton aria-label="share">
@@ -94,14 +114,14 @@ export default function RecipeReviewCard() {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-        {joined && (
-        <>
-          <button onClick={() => setJoined(false)}>
-            To Lobby
-          </button>
-          <VideoRoom />
-        </>
-      )}
+          {joined && (
+            <VideoRoom
+              ref={videoRoomRef}
+              isFullScreen={isFullScreen}
+              setIsFullScreen={setIsFullScreen}
+              setJoined={setJoined}
+            />
+          )}
         </CardContent>
       </Collapse>
     </Card>

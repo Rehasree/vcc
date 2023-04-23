@@ -16,13 +16,13 @@ const Item = styled(Paper)(({ theme }) => ({
 function FormRow() {
   return (
     <React.Fragment>
-      <Grid item xs={12} lg={4} md={6} style={{display:"flex", justifyContent:"center"}} >
+      <Grid item xs={12}  style={{display:"flex", justifyContent:"center"}} >
         <RecipeReviewCard/>
       </Grid>
-      <Grid item xs={12} lg={4} md={6} style={{display:"flex", justifyContent:"center"}}>
+      <Grid item xs={12}  style={{display:"flex", justifyContent:"center"}}>
         <RecipeReviewCard/>
       </Grid>
-      <Grid item xs={12} lg={4} md={6} style={{display:"flex", justifyContent:"center"}}>
+      <Grid item xs={12}  style={{display:"flex", justifyContent:"center"}}>
         <RecipeReviewCard/>
         {/* <Item>Item-1</Item> */}
       </Grid>
