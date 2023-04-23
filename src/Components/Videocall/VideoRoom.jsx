@@ -67,7 +67,7 @@ const VideoRoom = ({ isFullScreen, setIsFullScreen ,setJoined,accessToken}, ref)
       await waitForConnectionState('DISCONNECTED');
       console.log('token', token);
     
-      const uid = await client.join(APP_ID, CHANNEL, accessToken, null);
+      const uid = await client.join(APP_ID, CHANNEL, token, null);
     
       client.on('user-published', (user, mediaType) => {
         client.subscribe(user, mediaType).then(() => {
